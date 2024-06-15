@@ -1,0 +1,23 @@
+.product-card img {
+    margin-top: 10px;
+    width: 100%;
+    height: 250px;
+    object-fit: contain;
+}
+
+.product-card {
+    border: none !important;
+}
+
+<!--        /*.filter-section h4 {*/-->
+<!--        /*    margin-top: 20px;*/-->
+<!--        /*}*/-->
+
+<!--        /*.discount-code {*/-->
+<!--        /*    font-size: 0.8rem;*/-->
+<!--        /*    color: red;*/-->
+<!--        /*}*/-->
+<!--        /*.product-price {*/-->
+<!--        /*    font-size: 1.2rem;*/-->
+<!--        /*    font-weight: bold;*/-->
+<!--        /*}*/-->

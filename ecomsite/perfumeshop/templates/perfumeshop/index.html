@@ -1,130 +1,85 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Perfume Store</title>
+    <link rel="stylesheet" href="{% static 'perfumeshop/style.css' %}">
     <!-- Bootstrap CSS -->
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        .carousel-inner img {
-            width: 100%;
-            height: 400px;
-            object-fit: cover;
-        }
-        /*.filter-section h4 {*/
-        /*    margin-top: 20px;*/
-        /*}*/
-        .product-card img {
-            width: 100%;
-            height: 250px; /* Adjust the height as needed */
-            object-fit: contain;
-        }
-        /*.discount-code {*/
-        /*    font-size: 0.8rem;*/
-        /*    color: red;*/
-        /*}*/
-        /*.product-price {*/
-        /*    font-size: 1.2rem;*/
-        /*    font-weight: bold;*/
-        /*}*/
-    </style>
-</head>
-<body>
-    <div class="container">
-        <!-- Header Section -->
-        <header class="my-4">
-            <h1>Perfumy męskie</h1>
-        </header>
 
-        <!-- Banner Section -->
-        <div id="carouselExampleIndicators" class="carousel slide mb-4" data-ride="carousel">
-            <div class="carousel-inner">
-                <div class="carousel-item active">
-                    <img src="https://via.placeholder.com/800x400" class="d-block w-100" alt="Banner Image">
-                    <div class="carousel-caption d-none d-md-block">
-                        <h5>Wielorazowy atomizer do perfum w prezencie</h5>
-                        <p>przy zakupie produktów marki Novellista</p>
-                        <button class="btn btn-primary">KUP TERAZ</button>
-                    </div>
-                </div>
-                <!-- Add more carousel items as needed -->
-            </div>
-        </div>
+    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
 
-        <!-- Main Content Section -->
-        <div class="row">
-            <!-- Filters Section -->
-            <aside class="col-md-3 filter-section">
-                <h4>Przedział ceny</h4>
-                <input type="range" class="form-control-range" id="priceRange" min="0" max="9790">
-                <h4>Wysokość zniżki</h4>
-                <div class="form-check">
-                    <input type="checkbox" class="form-check-input" id="discount30">
-                    <label class="form-check-label" for="discount30">Zniżka 30%</label>
-                </div>
-                <div class="form-check">
-                    <input type="checkbox" class="form-check-input" id="discount20">
-                    <label class="form-check-label" for="discount20">Zniżka 20%</label>
-                </div>
-                <div class="form-check">
-                    <input type="checkbox" class="form-check-input" id="discount15">
-                    <label class="form-check-label" for="discount15">Zniżka 15%</label>
-                </div>
-                <div class="form-check">
-                    <input type="checkbox" class="form-check-input" id="discount10">
-                    <label class="form-check-label" for="discount10">Zniżka 10%</label>
-                </div>
-                <h4>Marka</h4>
-                <input type="text" class="form-control mb-3" id="brandSearch" placeholder="Szukaj...">
-                <div class="form-check">
-                    <input type="checkbox" class="form-check-input" id="brandVersace">
-                    <label class="form-check-label" for="brandVersace">Versace</label>
-                </div>
-                <div class="form-check">
-                    <input type="checkbox" class="form-check-input" id="brandDior">
-                    <label class="form-check-label" for="brandDior">Dior</label>
-                </div>
-                <div class="form-check">
-                    <input type="checkbox" class="form-check-input" id="brandChanel">
-                    <label class="form-check-label" for="brandChanel">Chanel</label>
-                </div>
-                <!-- Add more brands as needed -->
-            </aside>
-
-            <!-- Products Section -->
-            <main class="col-md-9">
-                <div class="row">
-                    <!-- Product Card Example -->
-                    {% for perfume in perfumes %}
-                    <div class="col-md-4 mb-4">
-                        <div class="card product-card">
-                            <img src="{{ perfume.image }}" class="card-img-top" alt="{{ perfume.name }}">
-                            <div class="card-body">
-                                <h5 class="card-title">{{ perfume.name }}</h5>
-                                <p class="card-text">woda perfumowana dla mężczyzn</p>
-                                <p class="product-price">{{ perfume.price }} zł</p>
-                            </div>
-                        </div>
-                    </div>
-                    {% endfor %}
-                </div>
-                <!-- Pagination -->
-                <nav aria-label="Page navigation">
-                    <ul class="pagination justify-content-center">
-                        <li class="page-item"><a class="page-link" href="#">1</a></li>
-                        <li class="page-item"><a class="page-link" href="#">2</a></li>
-                        <li class="page-item"><a class="page-link" href="#">3</a></li>
-                        <!-- Add more page links as needed -->
-                    </ul>
-                </nav>
-            </main>
-        </div>
-    </div>
-
-    <!-- Bootstrap JS and dependencies -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <form class="card card-sm">
+                    <div class="card-body row no-gutters align-items-center">
+                        <div class="col">
+                            <input type="search" name="item_name" placeholder="Search for products" class="form-control form-control-borderless">
+                        </div>
+                        <div class="col-auto">
+                            <button class="btn btn-success" type="submit">Search</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <main class="col-md-9" id="perfume-container">
+            <div class="row">
+                {% for perfume in perfumes %}
+                <div class="col-md-4 mb-4">
+                    <div class="card product-card" >
+                        <img src="{{ perfume.image }}" class="card-img-top" alt="{{ perfume.name }}">
+                        <div class="card-body">
+                            <h4 class="card-title">{{ perfume.brand }}</h4>
+                            <h5 class="product-name">{{ perfume.name }}</h5>
+                            <p class="product-type">{{ perfume.type }}</p>
+                            <p class="product-price">{{ perfume.price }} zł</p>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </main>
+    </div>
+
+    <div class="row">
+            <div class="col-md-3 offset-md-4">
+                <ul class="pagination">
+                    {% if perfumes.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ perfumes.previous_page_number }}">Previous</a>
+                        </li>
+                    {% endif %}
+
+                    <li class="page-item active">
+                        <a class="page-link" href="?page={{ perfumes.number }}">Current</a>
+                    </li>
+
+                    {% if perfumes.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ perfumes.next_page_number }}">Next</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+
+    <script src="{% static 'perfumeshop/custom.js' %}"></script>
+
+
+   
+
+
+    
 </body>
 </html>
