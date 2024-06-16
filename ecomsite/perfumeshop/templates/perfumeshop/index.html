@@ -10,11 +10,13 @@
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 
     <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
-
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
+   
+
+    
 </head>
 <body>
     <div class="container">
@@ -33,74 +35,95 @@
             </div>
         </div>
 
-        <main class="col-md-9" id="perfume-container">
-            <div class="row">
-                {% for perfume in perfumes %}
-                <div class="col-md-4 mb-4">
-                    <div class="card product-card" >
-                        <img src="{{ perfume.image }}" class="card-img-top" alt="{{ perfume.name }}">
-                        <div class="card-body">
-                            <h4 class="card-title">{{ perfume.brand }}</h4>
-                            <h5 class="product-name">{{ perfume.name }}</h5>
-                            <p class="product-type">{{ perfume.type }}</p>
-                            <p class="product-price">{{ perfume.price }} zł</p>
+        <div class="row">
+            <aside class="col-md-3 filter-section">
+                <h5>Price range</h5>
+
+                 <div class="price-range">
+                    <input type="number" class="form-control mb-2" id="minPrice" name="min_price" placeholder="0 zł">
+                    <span class="mx-2"> - </span>
+                    <input type="number" class="form-control mb-2" id="maxPrice" name="max_price" placeholder="10 980 zł">
+                </div>
+
+                <!-- <h4>Marka</h4>
+                <input type="text" class="form-control mb-3" id="brandSearch" placeholder="Szukaj...">
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" id="brandVersace">
+                    <label class="form-check-label" for="brandVersace">Versace</label>
+                </div>
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" id="brandDior">
+                    <label class="form-check-label" for="brandDior">Dior</label>
+                </div>
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" id="brandChanel">
+                    <label class="form-check-label" for="brandChanel">Chanel</label>
+                </div>
+                Add more brands as needed -->
+            </aside>
+
+            <main class="col-md-9" id="perfume-container">
+                <div class="row">
+                    {% for perfume in perfumes %}
+                    <div class="col-md-4 mb-4">
+                        <div class="card product-card">
+                            <img src="{{ perfume.image }}" class="card-img-top" alt="{{ perfume.name }}">
+                            <div class="card-body">
+                                <h4 class="card-title">{{ perfume.brand }}</h4>
+                                <h5 class="product-name">{{ perfume.name }}</h5>
+                                <p class="product-type">{{ perfume.type }}</p>
+                                <p class="product-price">{{ perfume.price }} zł</p>
+                            </div>
                         </div>
                     </div>
+                    {% endfor %}
                 </div>
-                {% endfor %}
+            </main>
+        </div>
+
+        <div class="row">
+            <div class="col-md-3 offset-md-4">
+                <ul class="pagination">
+                    {% if perfumes.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ perfumes.previous_page_number }}">Previous</a>
+                        </li>
+                    {% endif %}
+
+                    {% for num in perfumes.paginator.page_range %}
+                        {% if perfumes.number == num %}
+                            <li class="page-item active">
+                                <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                            </li>
+                        {% elif num > perfumes.number|add:'-3' and num < perfumes.number|add:'3' %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                            </li>
+                        {% elif num == 1 or num == perfumes.paginator.num_pages %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                            </li>
+                        {% elif num == perfumes.number|add:'-3' %}
+                            <li class="page-item">
+                                <span class="page-link">...</span>
+                            </li>
+                        {% elif num == perfumes.number|add:'3' %}
+                            <li class="page-item">
+                                <span class="page-link">...</span>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if perfumes.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ perfumes.next_page_number }}">Next</a>
+                        </li>
+                    {% endif %}
+                </ul>
             </div>
-        </main>
+        </div>
     </div>
-
-    <div class="row">
-    <div class="col-md-3 offset-md-4">
-        <ul class="pagination">
-            {% if perfumes.has_previous %}
-                <li class="page-item">
-                    <a class="page-link" href="?page={{ perfumes.previous_page_number }}">Previous</a>
-                </li>
-            {% endif %}
-
-            {% for num in perfumes.paginator.page_range %}
-                {% if perfumes.number == num %}
-                    <li class="page-item active">
-                        <a class="page-link" href="?page={{ num }}">{{ num }}</a>
-                    </li>
-                {% elif num > perfumes.number|add:'-3' and num < perfumes.number|add:'3' %}
-                    <li class="page-item">
-                        <a class="page-link" href="?page={{ num }}">{{ num }}</a>
-                    </li>
-                {% elif num == 1 or num == perfumes.paginator.num_pages %}
-                    <li class="page-item">
-                        <a class="page-link" href="?page={{ num }}">{{ num }}</a>
-                    </li>
-                {% elif num == perfumes.number|add:'-3' %}
-                    <li class="page-item">
-                        <span class="page-link">...</span>
-                    </li>
-                {% elif num == perfumes.number|add:'3' %}
-                    <li class="page-item">
-                        <span class="page-link">...</span>
-                    </li>
-                {% endif %}
-            {% endfor %}
-
-            {% if perfumes.has_next %}
-                <li class="page-item">
-                    <a class="page-link" href="?page={{ perfumes.next_page_number }}">Next</a>
-                </li>
-            {% endif %}
-        </ul>
-    </div>
-</div>
-
 
     <script src="{% static 'perfumeshop/custom.js' %}"></script>
-
-
-   
-
-
-    
 </body>
 </html>

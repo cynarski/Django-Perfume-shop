@@ -9,15 +9,16 @@
     border: none !important;
 }
 
-<!--        /*.filter-section h4 {*/-->
-<!--        /*    margin-top: 20px;*/-->
-<!--        /*}*/-->
+.price-range {
+    display: flex;
+    align-items: center;
+}
 
-<!--        /*.discount-code {*/-->
-<!--        /*    font-size: 0.8rem;*/-->
-<!--        /*    color: red;*/-->
-<!--        /*}*/-->
-<!--        /*.product-price {*/-->
-<!--        /*    font-size: 1.2rem;*/-->
-<!--        /*    font-weight: bold;*/-->
-<!--        /*}*/-->
+.price-range input {
+    width: 80px;
+    margin-right: 5px;
+}
+
+.price-range span {
+    margin: 0 5px;
+}
