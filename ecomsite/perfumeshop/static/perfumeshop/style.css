@@ -10,11 +10,13 @@
 }
 
 .price-range {
+    margin-top: 15px;
     display: flex;
     align-items: center;
 }
 
 .price-range input {
+    margin-top: 10px;
     width: 80px;
     margin-right: 5px;
 }

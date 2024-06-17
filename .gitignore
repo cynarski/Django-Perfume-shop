@@ -1,3 +1,4 @@
 .idea/
 venv/
-__pycache__
+ecomsite/ecomsite/__pycache__
+ecomsite/perfumeshop/__pycache__
