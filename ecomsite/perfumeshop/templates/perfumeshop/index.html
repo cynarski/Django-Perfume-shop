@@ -8,18 +8,56 @@
     <link rel="stylesheet" href="{% static 'perfumeshop/style.css' %}">
     <!-- Bootstrap CSS -->
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
-<!--    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>-->
-<!--    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>-->
-<!--    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>-->
-<!--    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>-->
+    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
+     <style>
+         .main-card {
+             margin-top: 20px;
+         }
+         .product-card img {
+            margin-top: 10px;
+            width: 100%;
+            height: 250px;
+            object-fit: contain;
+        }
 
+        .product-card {
+            border: none !important;
+        }
+
+        .price-range {
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        .price-range input {
+            margin-top: 10px;
+            width: 80px;
+            margin-right: 5px;
+        }
+
+        .price-range span {
+            margin: 0 5px;
+        }
+        .custom-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+    </style>
 
 
 </head>
 <body>
-    <div class="container">
+    
+    <i class="fas fa-search"></i>
+
+    <div class="container custom-container">
         <div class="row">
             <div class="col-md-12">
                 <form class="card card-sm" method="get">
@@ -35,17 +73,22 @@
             </div>
         </div>
 
-        <div class="row">
+        <div class="row main-card">
              <aside class="col-md-3 filter-section">
                 <h5>Price range</h5>
-                <form method="get">
+                <form method="get"  id="price-filter-form">
                     <div class="price-range">
                         <input type="number" class="form-control mb-2" id="minPrice" name="min_price" placeholder="0">
                         <span class="mx-2"> - </span>
                         <input type="number" class="form-control mb-2" id="maxPrice" name="max_price" placeholder="100">
+                        <!-- <button  type="submit">
+                            
+                        </button> -->
+                        
                     </div>
-                    <button class="btn btn-primary mt-2" type="submit">Filtruj</button>
+
                 </form>
+                <i class="fa-sharp fa-solid fa-magnifying-glass"></i>
             </aside>
 
             <main class="col-md-9" id="perfume-container">
@@ -111,5 +154,10 @@
     </div>
 
     <script src="{% static 'perfumeshop/custom.js' %}"></script>
+    <script>
+        
+    </script>
+
+    
 </body>
 </html>

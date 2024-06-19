@@ -30,7 +30,7 @@ def index(request):
             pass
 
     # pagination code
-    paginator = Paginator(perfumes, 24)
+    paginator = Paginator(perfumes, 12)
     page = request.GET.get('page')
 
     try:
