@@ -1,9 +1,17 @@
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import render
+from django.db.models import Q
+from django.db import connection
 from .models import Perfume
 
 def index(request):
     perfumes = Perfume.objects.all().order_by()
+
+    # get brands
+
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT DISTINCT brand FROM perfumeshop_perfume ORDER BY brand;")
+        all_brands = [row[0] for row in cursor.fetchall()]
 
     # search code
     item_name = request.GET.get('item_name', '').strip()
@@ -29,6 +37,12 @@ def index(request):
         except ValueError:
             pass
 
+    # Brand filter code
+    selected_brand = request.GET.get('brands')
+    if selected_brand:
+        perfumes = perfumes.filter(brand=selected_brand)
+
+
     # pagination code
     paginator = Paginator(perfumes, 12)
     page = request.GET.get('page')
@@ -40,4 +54,4 @@ def index(request):
     except EmptyPage:
         perfumes = paginator.page(paginator.num_pages)
 
-    return render(request, 'perfumeshop/index.html', {'perfumes': perfumes})
+    return render(request, 'perfumeshop/index.html', {'perfumes': perfumes, 'all_brands': all_brands})
