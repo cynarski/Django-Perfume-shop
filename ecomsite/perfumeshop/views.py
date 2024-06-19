@@ -55,3 +55,9 @@ def index(request):
         perfumes = paginator.page(paginator.num_pages)
 
     return render(request, 'perfumeshop/index.html', {'perfumes': perfumes, 'all_brands': all_brands})
+
+
+def detail(request, id):
+    
+    product_object = Perfume.objects.get(id=id)
+    return render(request, 'perfumeshop/detail.html', {'product_object': product_object})
