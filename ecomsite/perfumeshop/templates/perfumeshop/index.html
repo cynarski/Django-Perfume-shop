@@ -52,7 +52,7 @@
                 <form class="card card-sm" method="get" id="search-form">
                     <div class="card-body row no-gutters align-items-center">
                         <div class="col">
-                            <input type="search" name="item_name" placeholder="Search for products" class="form-control form-control-borderless">
+                            <input type="search" name="item_name" placeholder="Search for products" class="form-control form-control-borderless" value="{{ request.GET.item_name }}">
                         </div>
                         <div class="col-auto">
                             <button class="btn btn-success" type="submit">Search</button>
@@ -75,11 +75,9 @@
                     <h5>Brands</h5>
                     <div class="btn-group-vertical">
                         {% for brand in all_brands %}
-                            <button type="submit" class="btn btn-link text-left" name="brands" value="{{ brand }}">{{ brand }}</button>
+                            <button type="submit" class="btn btn-link text-left" name="brands" value="{{ brand }}" {% if brand == request.GET.brands %}style="font-weight: bold;"{% endif %}>{{ brand }}</button>
                         {% endfor %}
                     </div>
-                
-                    
                 </form>
             </aside>
 
@@ -103,8 +101,8 @@
         </div>
 
         <div class="row">
-            <div class="col-md-3 offset-md-4">
-                <ul class="pagination">
+            <div class="col-md-12">
+                 <ul class="pagination">
                     {% if perfumes.has_previous %}
                         <li class="page-item">
                             <a class="page-link" href="?page={{ perfumes.previous_page_number }}">Previous</a>
@@ -146,6 +144,5 @@
     </div>
 
     <script src="{% static 'perfumeshop/custom.js' %}"></script>
-
 </body>
 </html>

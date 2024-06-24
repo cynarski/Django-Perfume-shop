@@ -1,0 +1,15 @@
+.img-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #F7F9F9;
+        border: 1px solid #ddd;
+        padding: 20px;
+        margin: 20px 0;
+}
+
+.enlarged-image {
+max-width: 100%;
+height: auto;
+max-height: 600px; /* Adjust as needed */
+}

@@ -5,10 +5,9 @@ from django.db import connection
 from .models import Perfume
 
 def index(request):
-    perfumes = Perfume.objects.all().order_by()
+    perfumes = Perfume.objects.all().order_by()  # Assuming you want to order by name, adjust accordingly
 
     # get brands
-
     with connection.cursor() as cursor:
         cursor.execute("SELECT DISTINCT brand FROM perfumeshop_perfume ORDER BY brand;")
         all_brands = [row[0] for row in cursor.fetchall()]
@@ -42,7 +41,6 @@ def index(request):
     if selected_brand:
         perfumes = perfumes.filter(brand=selected_brand)
 
-
     # pagination code
     paginator = Paginator(perfumes, 12)
     page = request.GET.get('page')
@@ -54,9 +52,19 @@ def index(request):
     except EmptyPage:
         perfumes = paginator.page(paginator.num_pages)
 
-    return render(request, 'perfumeshop/index.html', {'perfumes': perfumes, 'all_brands': all_brands})
+    # Collecting filter parameters
+    filter_params = {
+        'item_name': item_name,
+        'min_price': min_price,
+        'max_price': max_price,
+        'brands': selected_brand,
+    }
 
-
+    return render(request, 'perfumeshop/index.html', {
+        'perfumes': perfumes,
+        'all_brands': all_brands,
+        'filter_params': filter_params,
+    })
 def detail(request, id):
     
     product_object = Perfume.objects.get(id=id)
