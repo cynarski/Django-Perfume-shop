@@ -5,7 +5,7 @@ from django.db import connection
 from .models import Perfume
 
 def index(request):
-    perfumes = Perfume.objects.all().order_by()  # Assuming you want to order by name, adjust accordingly
+    perfumes = Perfume.objects.all().order_by()
 
     # get brands
     with connection.cursor() as cursor:
