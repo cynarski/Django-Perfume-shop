@@ -3,7 +3,6 @@ from django.shortcuts import render
 from django.db.models import Q
 from django.db import connection
 from .models import Perfume
-
 def index(request):
     perfumes = Perfume.objects.all().order_by()
 
@@ -72,3 +71,5 @@ def detail(request, id):
 
 def checkout(request):
     return render(request, 'perfumeshop/checkout.html')
+
+
