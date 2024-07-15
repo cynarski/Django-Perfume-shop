@@ -2,7 +2,10 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import render
 from django.db.models import Q
 from django.db import connection
+from django.http import JsonResponse
 from .models import Perfume
+import json
+
 def index(request):
     perfumes = Perfume.objects.all().order_by()
 
@@ -25,7 +28,7 @@ def index(request):
         try:
             min_price = float(min_price)
             perfumes = perfumes.filter(price__gte=min_price)
-        except ValueError:
+        except ValueError: 
             pass
 
     if max_price:
@@ -71,5 +74,6 @@ def detail(request, id):
 
 def checkout(request):
     return render(request, 'perfumeshop/checkout.html')
+
 
 
