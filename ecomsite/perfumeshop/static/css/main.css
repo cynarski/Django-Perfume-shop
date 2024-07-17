@@ -1,0 +1,26 @@
+.custom-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.navbar-custom {
+    background-color: #f8f9fa;
+}
+
+.search-form {
+    background-color: #f8f9fa;
+    border: none;
+}
+
+.search-form .form-control {
+    border: none;
+    box-shadow: none;
+}
+
+.search-form .form-control:focus {
+   border: none;
+  box-shadow: none;
+}
+
+
+
