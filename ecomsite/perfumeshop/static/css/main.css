@@ -1,10 +1,14 @@
 .custom-container {
     max-width: 1200px;
-    margin: 0 auto;
+    /*margin: 0 auto;*/
+    margin-bottom: 10px;
+
 }
 
+
 .navbar-custom {
-    background-color: #f8f9fa;
+    background-color: black;
+    color: black;
 }
 
 .search-form {
@@ -18,9 +22,26 @@
 }
 
 .search-form .form-control:focus {
-   border: none;
-  box-shadow: none;
+    border: none;
+    box-shadow: none;
 }
 
+.input-group {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 900px;
+}
 
+.input-group .input-group-append .btn {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
 
+.nav-link{
+    color: black;
+}
+
+.btn{
+	border-radius: 0;
+}

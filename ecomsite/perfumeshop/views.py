@@ -75,5 +75,8 @@ def detail(request, id):
 def checkout(request):
     return render(request, 'perfumeshop/checkout.html')
 
+def cart(request):
+    return render(request, 'perfumeshop/cart.html')
+
 
 

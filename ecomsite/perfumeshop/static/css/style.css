@@ -19,7 +19,7 @@
 
 .price-range span {
     margin-top: 10px;
-} */
+}
 
 .filter-section h5 {
     margin-top: 20px;
@@ -37,12 +37,14 @@
     margin: 10px;
 }
 
-.paginator {
+.pagination {
     display: flex;
     justify-content: center;
+    align-items: center;
     margin-top: 20px;
 }
 
 .product-card {
     border: none;
 }
+
