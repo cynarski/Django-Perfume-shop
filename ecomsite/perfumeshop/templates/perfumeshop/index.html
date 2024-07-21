@@ -30,12 +30,12 @@
                 {% for perfume in perfumes %}
                 <div class="col-md-4 mb-4">
                     <div class="card product-card">
-                        <img src="{{ perfume.image }}" class="card-img-top" alt="{{ perfume.name }}">
+                        <a href="{{ perfume.id }}"><img src="{{ perfume.image }}" class="card-img-top" alt="{{ perfume.name }}"></a>
                         <div class="card-body">
                             <h4 class="card-title">{{ perfume.brand }}</h4>
                             <h5 id="nm{{ perfume.id }}" class="product-name">{{ perfume.name }}</h5>
                             <p class="product-type">{{ perfume.type }}</p>
-                            <p class="product-price">{{ perfume.price }} zł</p>
+                            <p class="product-price"><strong>{{perfume.price|floatformat:2}} zł</strong></p>
                         </div>
                         <div class="btn_style">
                             <a href="{{ perfume.id }}" class="btn btn-warning button">View</a>
