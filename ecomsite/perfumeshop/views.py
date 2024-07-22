@@ -3,7 +3,7 @@ from django.shortcuts import render
 from django.db.models import Q
 from django.db import connection
 from django.http import JsonResponse
-from .models import Perfume
+from .models import Perfume, Order
 import json
 
 def index(request):
@@ -73,10 +73,27 @@ def detail(request, id):
     return render(request, 'perfumeshop/detail.html', {'product_object': product_object})
 
 def checkout(request):
-    return render(request, 'perfumeshop/checkout.html')
+
+    if request.user.is_authenticated:
+        customer = request.user.customer
+        order, created = Order.objects.get_or_create(customer=customer, completed=False)
+        items = order.orderitem_set.all()
+    else:
+        items = []
+        order = {'get_cart_total': 0, 'get_cart_items': 0}
+
+    context = {'items': items, 'order': order}
+    return render(request, 'perfumeshop/checkout.html', context)
 
 def cart(request):
-    return render(request, 'perfumeshop/cart.html')
 
+    if request.user.is_authenticated:
+        customer = request.user.customer
+        order, created = Order.objects.get_or_create(customer=customer, completed=False)
+        items = order.orderitem_set.all()
+    else:
+        items = []
+        order = {'get_cart_total': 0, 'get_cart_items': 0}
 
-
+    context = {'items': items, 'order': order}
+    return render(request, 'perfumeshop/cart.html', context)

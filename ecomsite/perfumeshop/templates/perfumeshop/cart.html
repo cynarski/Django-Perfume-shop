@@ -1,6 +1,7 @@
 {% extends 'perfumeshop/main.html' %}
 {% load static %}
 {% block extra_css %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 <link rel="stylesheet" href="{% static 'css/cart.css' %}">
 {% endblock %}
 
@@ -17,8 +18,8 @@
 				<br>
 				<table class="table">
 					<tr>
-						<th><h5>Items: <strong>3</strong></h5></th>
-						<th><h5>Total:<strong> $42</strong></h5></th>
+						<th><h5>Items: <strong>{{ order.get_cart_items }}</strong></h5></th>
+						<th><h5>Total:<strong>${{ order.get_cart_total|floatformat:2 }}</strong></h5></th>
 						<th>
 							<a  style="float:right; margin:5px;" class="btn btn-success" href="{% url 'checkout' %}">Checkout</a>
 						</th>
@@ -36,19 +37,21 @@
 					<div style="flex:1"><strong>Quantity</strong></div>
 					<div style="flex:1"><strong>Total</strong></div>
 				</div>
-
+                {% for item in items %}
 				<div class="cart-row">
-=
-					<div style="flex:2"><p>Product 1</p></div>
-					<div style="flex:1"><p>$20</p></div>
+					<div style="flex:2"><img class="product-image" src="{{item.product.image}}" alt=""></div>
+					<div style="flex:2"><p>{{item.product.brand}} - {{item.product.name}}</p></div>
+					<div style="flex:1"><p>${{item.product.price|floatformat:2}}</p></div>
 					<div style="flex:1">
-						<p class="quantity">2</p>
+						<p class="quantity">{{item.quantity}}</p>
 						<div class="quantity">
-
+							<i class="fas fa-caret-up chg-quantity"></i>
+                            <i class="fas fa-caret-down chg-quantity"></i>
 						</div>
 					</div>
-					<div style="flex:1"><p>$32</p></div>
+                    <div style="flex:1"><p><strong>${{item.get_total|floatformat:2}}</strong></p></div>
 				</div>
+                {% endfor %}
 
 			</div>
 		</div>
