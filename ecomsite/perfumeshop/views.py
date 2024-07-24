@@ -3,10 +3,23 @@ from django.shortcuts import render
 from django.db.models import Q
 from django.db import connection
 from django.http import JsonResponse
-from .models import Perfume, Order
+from django.views.decorators.csrf import csrf_exempt
+from .models import Perfume, Order, OrderItem, ShippingAddress
 import json
+import datetime
+
 
 def index(request):
+    if request.user.is_authenticated:
+        customer = request.user.customer
+        order, created = Order.objects.get_or_create(customer=customer, completed=False)
+        items = order.orderitem_set.all()
+        cartItems = order.get_cart_items
+    else:
+        items = []
+        order = {'get_cart_total': 0, 'get_cart_items': 0}
+        cartItems = order['get_cart_items']
+
     perfumes = Perfume.objects.all().order_by()
 
     # get brands
@@ -28,7 +41,7 @@ def index(request):
         try:
             min_price = float(min_price)
             perfumes = perfumes.filter(price__gte=min_price)
-        except ValueError: 
+        except ValueError:
             pass
 
     if max_price:
@@ -62,38 +75,106 @@ def index(request):
         'brands': selected_brand,
     }
 
-    return render(request, 'perfumeshop/index.html', {
+    context = {
         'perfumes': perfumes,
         'all_brands': all_brands,
         'filter_params': filter_params,
-    })
+        'cartItems': cartItems,
+        'user': request.user,  # Add this line
+    }
+    return render(request, 'perfumeshop/index.html', context)
+
+
 def detail(request, id):
-    
     product_object = Perfume.objects.get(id=id)
     return render(request, 'perfumeshop/detail.html', {'product_object': product_object})
 
-def checkout(request):
 
+def checkout(request):
     if request.user.is_authenticated:
         customer = request.user.customer
         order, created = Order.objects.get_or_create(customer=customer, completed=False)
         items = order.orderitem_set.all()
+        cartItems = order.get_cart_items
     else:
         items = []
-        order = {'get_cart_total': 0, 'get_cart_items': 0}
+        order = {'get_cart_total': 0, 'get_cart_items': 0, 'shipping': False}
+        cartItems = order['get_cart_items']
 
-    context = {'items': items, 'order': order}
+    context = {'items': items, 'order': order, 'cartItems': cartItems}
     return render(request, 'perfumeshop/checkout.html', context)
 
+
 def cart(request):
+    if request.user.is_authenticated:
+
+        customer = request.user.customer
+        order, created = Order.objects.get_or_create(customer=customer, completed=False)
+        items = order.orderitem_set.all()
+        cartItems = order.get_cart_items
+    else:
+        items = []
+        order = {'get_cart_total': 0, 'get_cart_items': 0}
+        cartItems = order['get_cart_items']
+
+    context = {'items': items, 'order': order, 'cartItems': cartItems}
+    return render(request, 'perfumeshop/cart.html', context)
+
+
+@csrf_exempt
+def update_item(request):
+    data = json.loads(request.body)
+    productId = data['productId']
+    action = data['action']
+    print('Action:', action)
+    print('Product:', productId)
+
+    customer = request.user.customer
+    product = Product.objects.get(id=productId)
+    order, created = Order.objects.get_or_create(customer=customer, completed=False)
+
+    orderItem, created = OrderItem.objects.get_or_create(order=order, product=product)
+
+    if action == 'add':
+        orderItem.quantity = (orderItem.quantity + 1)
+    elif action == 'remove':
+        orderItem.quantity = (orderItem.quantity - 1)
+
+    orderItem.save()
+
+    if orderItem.quantity <= 0:
+        orderItem.delete()
+
+    return JsonResponse('Item was added', safe=False)
+
+
+@csrf_exempt
+def processOrder(request):
+    transaction_id = datetime.datetime.now().timestamp()
+    data = json.loads(request.body)
 
     if request.user.is_authenticated:
         customer = request.user.customer
         order, created = Order.objects.get_or_create(customer=customer, completed=False)
-        items = order.orderitem_set.all()
-    else:
-        items = []
-        order = {'get_cart_total': 0, 'get_cart_items': 0}
+        total = float(data['form']['total'])
+        order.transaction_id = transaction_id
 
-    context = {'items': items, 'order': order}
-    return render(request, 'perfumeshop/cart.html', context)
+        if total == float(order.get_cart_total):
+            order.completed = True
+
+        order.save()
+
+    else:
+        customer, order = guestOrder(request, data)
+
+    if order.shipping:
+        ShippingAddress.objects.create(
+            customer=customer,
+            order=order,
+            address=data['shipping']['address'],
+            city=data['shipping']['city'],
+            state=data['shipping']['state'],
+            zipcode=data['shipping']['zipcode'],
+        )
+
+    return JsonResponse('Payment submitted..', safe=False)

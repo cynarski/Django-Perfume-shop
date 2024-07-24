@@ -40,7 +40,8 @@
                         </div>
                         <div class="btn_style">
                             <a href="{{ perfume.id }}" class="btn btn-warning button">View</a>
-                            <button id="{{ perfume.id }}" class="btn atc btn-warning button">Add to cart</button>
+                            <button id="{{ perfume.id }}" class="btn atc btn-warning button update-cart" data-product="{{ perfume.id }}" data-action="add">Add to cart</button>
+
                         </div>
                     </div>
                 </div>
@@ -93,4 +94,5 @@
 
 {% block extra_js %}
 <script src="{% static 'js/custom.js' %}"></script>
+<script src="{% static 'js/cart.js' %}"></script>
 {% endblock %}

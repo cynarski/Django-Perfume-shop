@@ -10,6 +10,7 @@ class Perfume(models.Model):
     type = models.CharField(max_length=255)
     price = models.FloatField()
     image = models.TextField()
+    digital = models.BooleanField(default=False, null=True, blank=False)
 
     def __str__(self):
         return f"{self.brand} - {self.name}"
@@ -32,6 +33,18 @@ class Order(models.Model):
 
     def __str__(self):
         return str(self.id)
+
+    @property
+    def shipping(self):
+        shipping = False
+        orderitems = self.orderitem_set.all()
+
+        for i in orderitems:
+
+            if not i.product.digital:
+                shipping = True
+
+        return shipping
 
     @property
     def get_cart_total(self):
