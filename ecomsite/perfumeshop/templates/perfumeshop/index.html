@@ -17,10 +17,11 @@
                     <input type="number" class="form-control mb-2" id="maxPrice" name="max_price" placeholder="100" value="{{ request.GET.max_price }}">
                     <button type="submit" class="btn btn-primary mt-3">Filter</button>
                 </div>
+
                 <h5>Brands</h5>
-                <div class="btn-group-vertical">
+                <div class="brand-list">
                     {% for brand in all_brands %}
-                        <button type="submit" class="btn btn-link text-left" name="brands" value="{{ brand }}" {% if brand == request.GET.brands %}style="font-weight: bold;"{% endif %}>{{ brand }}</button>
+                        <button type="submit" class="btn btn-link text-left brand-filter" name="brands" value="{{ brand }}" {% if brand == request.GET.brands %}style="font-weight: bold;"{% endif %}>{{ brand }}</button>
                     {% endfor %}
                 </div>
             </form>

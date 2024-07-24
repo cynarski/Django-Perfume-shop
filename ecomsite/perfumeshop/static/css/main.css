@@ -1,14 +1,7 @@
-.custom-container {
-    max-width: 1200px;
-    /*margin: 0 auto;*/
-    margin-bottom: 10px;
-
-}
-
-
-.navbar-custom {
+.navbar {
     background-color: black;
     color: black;
+    margin-bottom: 15px;
 }
 
 .search-form {
@@ -31,6 +24,8 @@
     justify-content: center;
     align-items: center;
     width: 900px;
+    margin-right: 1rem;
+
 }
 
 .input-group .input-group-append .btn {
@@ -40,6 +35,7 @@
 
 .nav-link{
     color: black;
+
 }
 
 .btn{
@@ -66,6 +62,5 @@
 
 .links {
     display: flex;
-
 }
 

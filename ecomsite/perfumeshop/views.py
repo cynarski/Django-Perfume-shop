@@ -130,7 +130,7 @@ def update_item(request):
     print('Product:', productId)
 
     customer = request.user.customer
-    product = Product.objects.get(id=productId)
+    product = Perfume.objects.get(id=productId)
     order, created = Order.objects.get_or_create(customer=customer, completed=False)
 
     orderItem, created = OrderItem.objects.get_or_create(order=order, product=product)

@@ -6,23 +6,25 @@
 }
 
 .price-range {
-    margin-top: 10px;
     display: flex;
     align-items: center;
+    justify-content: center;
 }
 
 .price-range input {
-    margin-top: 10px;
-    width: 80px;
-    margin-right: 5px;
+    margin: 0 5px;
+    width: 70px;
+    height: 34px;
+    box-sizing: border-box;
 }
 
-.price-range span {
-    margin-top: 10px;
-}
-
-.filter-section h5 {
-    margin-top: 20px;
+.price-range button {
+    margin-left: 10px;
+    height: 34px;
+    padding: 0 16px;
+    box-sizing: border-box;
+    line-height: 1;
+    margin-bottom: 25px;
 }
 
 .btn_style {
@@ -48,3 +50,44 @@
     border: none;
 }
 
+.brand-list {
+    max-width: 300px;
+    margin: 0 auto;
+}
+
+.brand-filter {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 10px 15px;
+    border: none;
+    background: none;
+    font-size: 16px;
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.brand-filter:hover,
+.brand-filter:focus {
+    background-color: #f0f0f0;
+    text-decoration: none;
+}
+
+.brand-filter[style="font-weight: bold;"] {
+    font-weight: bold;
+}
+
+.brand-filter:focus {
+    outline: none;
+}
+
+.card-title,
+.product-name,
+.product-type,
+.product-price {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
