@@ -5,20 +5,16 @@ from django.db import connection
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from .models import Perfume, Order, OrderItem, ShippingAddress
-import json
+from .utils import cookieCart, cartData, guestOrder
 import datetime
-
+import json
 
 def index(request):
-    if request.user.is_authenticated:
-        customer = request.user.customer
-        order, created = Order.objects.get_or_create(customer=customer, completed=False)
-        items = order.orderitem_set.all()
-        cartItems = order.get_cart_items
-    else:
-        items = []
-        order = {'get_cart_total': 0, 'get_cart_items': 0, 'shipping': False}
-        cartItems = order['get_cart_items']
+    data = cartData(request)
+
+    cartItems = data['cartItems']
+    order = data['order']
+    items = data['items']
 
     perfumes = Perfume.objects.all().order_by()
 
@@ -86,75 +82,36 @@ def index(request):
 
 
 def detail(request, id):
+    data = cartData(request)
+
+    cartItems = data['cartItems']
+    order = data['order']
+    items = data['items']
+
     product_object = Perfume.objects.get(id=id)
-    return render(request, 'perfumeshop/detail.html', {'product_object': product_object})
+
+    context = {'items': items, 'order': order, 'cartItems': cartItems, 'product_object': product_object}
+    return render(request, 'perfumeshop/detail.html', context)
 
 
 def checkout(request):
-    if request.user.is_authenticated:
-        customer = request.user.customer
-        order, created = Order.objects.get_or_create(customer=customer, completed=False)
-        items = order.orderitem_set.all()
-        cartItems = order.get_cart_items
-    else:
-        items = []
-        order = {'get_cart_total': 0, 'get_cart_items': 0, 'shipping': False}
-        cartItems = order['get_cart_items']
+    data = cartData(request)
+
+    cartItems = data['cartItems']
+    order = data['order']
+    items = data['items']
 
     context = {'items': items, 'order': order, 'cartItems': cartItems}
     return render(request, 'perfumeshop/checkout.html', context)
 
 
 def cart(request):
-    if request.user.is_authenticated:
+    data = cartData(request)
 
-        customer = request.user.customer
-        order, created = Order.objects.get_or_create(customer=customer, completed=False)
-        items = order.orderitem_set.all()
-        cartItems = order.get_cart_items
-    else:
-        try:
-            cart = json.loads(request.COOKIES['cart'])
-        except:
-            cart = {}
-        # print(cart)
-        items = []
-        order = {'get_cart_total': 0, 'get_cart_items': 0, 'shipping': False}
-        cartItems = order['get_cart_items']
+    cartItems = data['cartItems']
+    order = data['order']
+    items = data['items']
 
-        for i in cart:
-            try:
-                # print(cart[i]['quantity'])
-                cartItems += cart[i]['quantity']
-
-                # print(Perfume.objects.get(id=i))
-                product = Perfume.objects.get(id=i)
-                total = product.price * cart[i]['quantity']
-
-                order['get_cart_total'] += total
-                order['get_cart_items'] += cart[i]['quantity']
-
-                # print(order)
-
-                item = {
-                    'product': {
-                        'id': product.id,
-                        'name': product.brand + ' ' + product.name,
-                        'price': product.price,
-                        'image': product.image
-                    },
-                    'quantity': cart[i]['quantity'],
-                    'get_total': total,
-                }
-                # print(item, flush=True)
-                items.append(item)
-
-                if not product.digital:
-                    order['shipping'] = True
-            except:
-                pass
-
-    print(order, flush=True)
     context = {'items': items, 'order': order, 'cartItems': cartItems}
     return render(request, 'perfumeshop/cart.html', context)
 
@@ -194,16 +151,17 @@ def processOrder(request):
     if request.user.is_authenticated:
         customer = request.user.customer
         order, created = Order.objects.get_or_create(customer=customer, completed=False)
-        total = float(data['form']['total'])
-        order.transaction_id = transaction_id
-
-        if total == float(order.get_cart_total):
-            order.completed = True
-
-        order.save()
 
     else:
-        customer, order = guestOrder(request, data)
+       customer, order = guestOrder(request,data)
+
+    total = float(data['form']['total'])
+    order.transaction_id = transaction_id
+
+    if total == float(order.get_cart_total):
+        order.completed = True
+
+    order.save()
 
     if order.shipping:
         ShippingAddress.objects.create(
@@ -214,5 +172,4 @@ def processOrder(request):
             state=data['shipping']['state'],
             zipcode=data['shipping']['zipcode'],
         )
-
     return JsonResponse('Payment submitted..', safe=False)
