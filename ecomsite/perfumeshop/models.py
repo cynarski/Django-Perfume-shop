@@ -8,7 +8,7 @@ class Perfume(models.Model):
     brand = models.CharField(max_length=255)
     name = models.CharField(max_length=255)
     type = models.CharField(max_length=255)
-    price = models.FloatField()
+    price = models.DecimalField(max_digits=7, decimal_places=2)
     image = models.TextField()
     digital = models.BooleanField(default=False, null=True, blank=False)
 

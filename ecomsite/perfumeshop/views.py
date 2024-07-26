@@ -17,7 +17,7 @@ def index(request):
         cartItems = order.get_cart_items
     else:
         items = []
-        order = {'get_cart_total': 0, 'get_cart_items': 0}
+        order = {'get_cart_total': 0, 'get_cart_items': 0, 'shipping': False}
         cartItems = order['get_cart_items']
 
     perfumes = Perfume.objects.all().order_by()
@@ -113,10 +113,48 @@ def cart(request):
         items = order.orderitem_set.all()
         cartItems = order.get_cart_items
     else:
+        try:
+            cart = json.loads(request.COOKIES['cart'])
+        except:
+            cart = {}
+        # print(cart)
         items = []
-        order = {'get_cart_total': 0, 'get_cart_items': 0}
+        order = {'get_cart_total': 0, 'get_cart_items': 0, 'shipping': False}
         cartItems = order['get_cart_items']
 
+        for i in cart:
+            try:
+                # print(cart[i]['quantity'])
+                cartItems += cart[i]['quantity']
+
+                # print(Perfume.objects.get(id=i))
+                product = Perfume.objects.get(id=i)
+                total = product.price * cart[i]['quantity']
+
+                order['get_cart_total'] += total
+                order['get_cart_items'] += cart[i]['quantity']
+
+                # print(order)
+
+                item = {
+                    'product': {
+                        'id': product.id,
+                        'name': product.brand + ' ' + product.name,
+                        'price': product.price,
+                        'image': product.image
+                    },
+                    'quantity': cart[i]['quantity'],
+                    'get_total': total,
+                }
+                # print(item, flush=True)
+                items.append(item)
+
+                if not product.digital:
+                    order['shipping'] = True
+            except:
+                pass
+
+    print(order, flush=True)
     context = {'items': items, 'order': order, 'cartItems': cartItems}
     return render(request, 'perfumeshop/cart.html', context)
 
