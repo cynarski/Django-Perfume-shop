@@ -4,10 +4,11 @@ from django.db.models import Q
 from django.db import connection
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from .models import Perfume, Order, OrderItem, ShippingAddress
+from .models import *
 from .utils import cookieCart, cartData, guestOrder
 import datetime
 import json
+
 
 def index(request):
     data = cartData(request)
@@ -90,7 +91,21 @@ def detail(request, id):
 
     product_object = Perfume.objects.get(id=id)
 
-    context = {'items': items, 'order': order, 'cartItems': cartItems, 'product_object': product_object}
+    with connection.cursor() as cursor:
+        querry = f"""SELECT brand, name, top_notes, middle_notes, base_notes,fragrance_category FROM perfumeshop_perfume
+                    JOIN perfumeshop_detail pd on perfumeshop_perfume.id = pd.perfume_id
+                    WHERE pd.perfume_id = {id};"""
+        cursor.execute(querry)
+        detail = cursor.fetchall()
+
+    details = {
+        'top_notes': detail[0][2],
+        'middle_notes': detail[0][3],
+        'base_notes': detail[0][4],
+        'fragrance_category': detail[0][5]
+    }
+
+    context = {'items': items, 'order': order, 'cartItems': cartItems, 'product_object': product_object, 'details': details}
     return render(request, 'perfumeshop/detail.html', context)
 
 
@@ -101,7 +116,7 @@ def checkout(request):
     order = data['order']
     items = data['items']
 
-    context = {'items': items, 'order': order, 'cartItems': cartItems}
+    context = {'items': items, 'order': order, 'cartItems': cartItems, 'user': request.user}
     return render(request, 'perfumeshop/checkout.html', context)
 
 
@@ -124,10 +139,16 @@ def update_item(request):
     print('Action:', action)
     print('Product:', productId)
 
-    customer = request.user.customer
+    if request.user.is_authenticated:
+        try:
+            customer = request.user.customer
+        except Customer.DoesNotExist:
+            customer = Customer.objects.create(user=request.user)
+    else:
+        return JsonResponse('User is not authenticated', safe=False, status=400)
+
     product = Perfume.objects.get(id=productId)
     order, created = Order.objects.get_or_create(customer=customer, completed=False)
-
     orderItem, created = OrderItem.objects.get_or_create(order=order, product=product)
 
     if action == 'add':
@@ -142,25 +163,26 @@ def update_item(request):
 
     return JsonResponse('Item was added', safe=False)
 
-
 @csrf_exempt
 def processOrder(request):
     transaction_id = datetime.datetime.now().timestamp()
     data = json.loads(request.body)
 
     if request.user.is_authenticated:
-        customer = request.user.customer
-        order, created = Order.objects.get_or_create(customer=customer, completed=False)
+        try:
+            customer = request.user.customer
+        except Customer.DoesNotExist:
+            customer = Customer.objects.create(user=request.user)
 
+        order, created = Order.objects.get_or_create(customer=customer, completed=False)
     else:
-       customer, order = guestOrder(request,data)
+        customer, order = guestOrder(request, data)
 
     total = float(data['form']['total'])
     order.transaction_id = transaction_id
 
-    if total == float(order.get_cart_total):
-        order.completed = True
-
+    if total == order.get_cart_total:
+        order.complete = True
     order.save()
 
     if order.shipping:
@@ -172,4 +194,6 @@ def processOrder(request):
             state=data['shipping']['state'],
             zipcode=data['shipping']['zipcode'],
         )
+
     return JsonResponse('Payment submitted..', safe=False)
+

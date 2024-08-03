@@ -75,15 +75,19 @@
 </div>
 
 
-<script type="text/javascript">
-    let shipping = '{{order.shipping}}'
-    let total = '{{order.get_cart_total}}'
-    console.log(total)
-    if (shipping === 'False'){
-        document.getElementById('shipping-info').innerHTML = ''
-    }
 
-    if (user !== 'AnonymousUser') {
+
+<script type="text/javascript">
+
+let shipping = '{{order.shipping}}'
+let total = '{{order.get_cart_total}}'
+console.log(total)
+
+if (shipping === 'False'){
+    document.getElementById('shipping-info').innerHTML = ''
+}
+
+if (user !== 'AnonymousUser') {
     document.getElementById('user-info').innerHTML = '';
 }
 
@@ -120,14 +124,14 @@ function submitFormData() {
         'zipcode': null,
     };
 
-    if (shipping != 'False') {
+    if (shipping !== 'False') {
         shippingInfo.address = form.address.value;
         shippingInfo.city = form.city.value;
         shippingInfo.state = form.state.value;
         shippingInfo.zipcode = form.zipcode.value;
     }
 
-    if (user == 'AnonymousUser') {
+    if (user === 'AnonymousUser') {
         userFormData.name = form.name.value;
         userFormData.email = form.email.value;
     }
@@ -137,23 +141,37 @@ function submitFormData() {
 
     let url = "/process_order/";
     fetch(url, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': csrftoken,
-        },
-        body: JSON.stringify({'form': userFormData, 'shipping': shippingInfo}),
-    })
-    .then((response) => response.json())
-    .then((data) => {
-        console.log('Success:', data);
-        alert('Transaction completed');
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': csrftoken,
+    },
+    body: JSON.stringify({'form': userFormData, 'shipping': shippingInfo}),
+})
+.then((response) => {
+    if (!response.ok) {
+        throw new Error('Network response was not ok: ' + response.statusText);
+    }
+    return response.json();
+})
+.then((data) => {
+    console.log('Success:', data);
+    alert('Transaction completed');
 
-        cart = {};
-        document.cookie = 'cart=' + JSON.stringify(cart) + ";domain=;path=/";
+    cart = {};
+    document.cookie = 'cart=' + JSON.stringify(cart) + ";domain=;path=/";
 
-        window.location.href = '/';
-    });
+    window.location.href = '/';
+})
+.catch((error) => {
+    console.error('There was a problem with the fetch operation:', error);
+    alert('There was an issue with the transaction.');
+
+    cart = {};
+    document.cookie = 'cart=' + JSON.stringify(cart) + ";domain=;path=/";
+
+    window.location.href = '/';
+});
 }
 </script>
 
