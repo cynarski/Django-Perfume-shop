@@ -3,7 +3,6 @@ from .models import *
 
 
 def cookieCart(request):
-    # Create empty cart for now for non-logged in user
     try:
         cart = json.loads(request.COOKIES['cart'])
     except:
@@ -13,32 +12,30 @@ def cookieCart(request):
     items = []
     order = {'get_cart_total': 0, 'get_cart_items': 0, 'shipping': False}
     cartItems = order['get_cart_items']
-
+    print(cart)
     for i in cart:
-        # We use try block to prevent items in cart that may have been removed from causing error
-        try:
-            if (cart[i]['quantity'] > 0):  # items with negative quantity = lot of freebies
-                cartItems += cart[i]['quantity']
 
-                product = Product.objects.get(id=i)
-                total = (product.price * cart[i]['quantity'])
 
-                order['get_cart_total'] += total
-                order['get_cart_items'] += cart[i]['quantity']
+        if (cart[i]['quantity'] > 0):
+            cartItems += cart[i]['quantity']
 
-                item = {
-                    'id': product.id,
-                    'product': {'id': product.id, 'name': product.name, 'price': product.price,
-                                'imageURL': product.imageURL}, 'quantity': cart[i]['quantity'],
-                    'digital': product.digital, 'get_total': total,
-                }
-                items.append(item)
+            product = Perfume.objects.get(id=i)
+            total = (product.price * cart[i]['quantity'])
 
-                if product.digital == False:
-                    order['shipping'] = True
-        except:
-            pass
+            order['get_cart_total'] += total
+            order['get_cart_items'] += cart[i]['quantity']
 
+            item = {
+                'id': product.id,
+                'product': {'id': product.id, 'name': product.name, 'price': product.price,
+                            'image': product.image}, 'quantity': cart[i]['quantity'],
+                'digital': product.digital, 'get_total': total,
+            }
+
+            items.append(item)
+
+            if product.digital == False:
+                order['shipping'] = True
     return {'cartItems': cartItems, 'order': order, 'items': items}
 
 
@@ -80,11 +77,10 @@ def guestOrder(request, data):
     )
 
     for item in items:
-        product = Product.objects.get(id=item['id'])
+        product = Perfume.objects.get(id=item['id'])
         orderItem = OrderItem.objects.create(
             product=product,
             order=order,
             quantity=(item['quantity'] if item['quantity'] > 0 else -1 * item['quantity']),
-            # negative quantity = freebies
         )
     return customer, order

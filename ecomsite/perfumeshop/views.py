@@ -79,6 +79,7 @@ def index(request):
         'cartItems': cartItems,
         'user': request.user,  # Add this line
     }
+    print(cartItems)
     return render(request, 'perfumeshop/index.html', context)
 
 
@@ -117,6 +118,7 @@ def checkout(request):
     items = data['items']
 
     context = {'items': items, 'order': order, 'cartItems': cartItems, 'user': request.user}
+
     return render(request, 'perfumeshop/checkout.html', context)
 
 
@@ -126,7 +128,7 @@ def cart(request):
     cartItems = data['cartItems']
     order = data['order']
     items = data['items']
-
+    print('items', items)
     context = {'items': items, 'order': order, 'cartItems': cartItems}
     return render(request, 'perfumeshop/cart.html', context)
 
@@ -182,8 +184,11 @@ def processOrder(request):
     order.transaction_id = transaction_id
 
     if total == order.get_cart_total:
-        order.complete = True
-    order.save()
+        order.complete = True  # Ensure the order is marked as complete
+    else:
+        return JsonResponse('Payment total does not match the order total', safe=False, status=400)
+
+    order.save()  # Save the order after setting it as complete
 
     if order.shipping:
         ShippingAddress.objects.create(
